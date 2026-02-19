@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 96%;
+    --foreground: 160 10% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 160 10% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 10% 15%;
+
+    --primary: 122 46% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 62% 41%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 38 100% 50%;
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 25 95% 53%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 122 46% 33%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 122 46% 33%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 122 46% 33%;
+
+    /* Custom tokens */
+    --success: 122 46% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 100% 50%;
+    --warning-foreground: 0 0% 10%;
+    --info: 210 62% 41%;
+    --info-foreground: 0 0% 100%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(122 46% 33%), hsl(122 46% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(38 100% 50%), hsl(38 100% 60%));
+    --gradient-secondary: linear-gradient(135deg, hsl(210 62% 41%), hsl(210 62% 55%));
+
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.08);
+    --shadow-elevated: 0 8px 32px -8px hsl(0 0% 0% / 0.12);
+    --shadow-glow: 0 0 20px hsl(122 46% 33% / 0.2);
+
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-heading: 'Nunito', system-ui, sans-serif;
+  }
+
+  .dark {
+    --background: 160 10% 8%;
+    --foreground: 0 0% 95%;
+
+    --card: 160 10% 12%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 160 10% 12%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 122 46% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 62% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 160 10% 18%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 38 100% 55%;
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 25 95% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 160 10% 20%;
+    --input: 160 10% 20%;
+    --ring: 122 46% 45%;
+
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 8px 32px -8px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 20px hsl(122 46% 45% / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer components {
+  .btn-hero {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-lg font-bold transition-all duration-300;
+    background: var(--gradient-hero);
+    color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-elevated), var(--shadow-glow);
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .btn-hero:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-elevated), 0 0 30px hsl(122 46% 33% / 0.35);
+  }
+
+  .btn-hero:active {
+    transform: scale(0.98);
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 font-bold transition-all duration-300;
+    background: var(--gradient-accent);
+    color: hsl(var(--accent-foreground));
+    box-shadow: var(--shadow-card);
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .btn-accent:hover {
+    transform: scale(1.05);
+  }
+
+  .card-kit {
+    @apply rounded-2xl p-4 transition-all duration-300 cursor-pointer;
+    background: hsl(var(--card));
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-kit:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .badge-earned {
+    @apply rounded-2xl p-4 text-center transition-all duration-300;
+    background: var(--gradient-hero);
+    color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-glow);
+  }
+
+  .badge-locked {
+    @apply rounded-2xl p-4 text-center;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
+
+  .floating-btn {
+    @apply fixed z-50 flex items-center justify-center rounded-full transition-all duration-300;
+    width: 60px;
+    height: 60px;
+    bottom: 88px;
+    right: 20px;
+    background: var(--gradient-hero);
+    color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-elevated), var(--shadow-glow);
+  }
+
+  .floating-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .nav-bottom {
+    @apply fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t px-2 py-2;
+    background: hsl(var(--card));
+    box-shadow: 0 -4px 20px hsl(0 0% 0% / 0.05);
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .nav-item {
+    @apply flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200;
+    color: hsl(var(--muted-foreground));
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .nav-item.active {
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.1);
+  }
+
+  .progress-track {
+    @apply rounded-full overflow-hidden;
+    height: 12px;
+    background: hsl(var(--muted));
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+    background: var(--gradient-hero);
+  }
+
+  .chat-bubble-user {
+    @apply rounded-2xl rounded-br-md px-4 py-3 max-w-[80%] ml-auto;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .chat-bubble-assistant {
+    @apply rounded-2xl rounded-bl-md px-4 py-3 max-w-[80%];
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    box-shadow: var(--shadow-card);
+  }
+
+  .difficulty-easy {
+    @apply px-2 py-1 rounded-full text-xs font-bold;
+    background: hsl(var(--success) / 0.15);
+    color: hsl(var(--success));
+  }
+
+  .difficulty-medium {
+    @apply px-2 py-1 rounded-full text-xs font-bold;
+    background: hsl(var(--warning) / 0.15);
+    color: hsl(38 100% 35%);
+  }
+
+  .difficulty-hard {
+    @apply px-2 py-1 rounded-full text-xs font-bold;
+    background: hsl(var(--destructive) / 0.15);
+    color: hsl(var(--destructive));
+  }
+}
+
+@layer utilities {
+  .tap-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+
+  .animate-wiggle {
+    animation: wiggle 1s ease-in-out infinite;
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  @keyframes confetti-fall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  .animate-confetti {
+    animation: confetti-fall 3s ease-in forwards;
+  }
+}
