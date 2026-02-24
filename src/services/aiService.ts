@@ -68,40 +68,68 @@ export async function analyzeImageWithGroq(base64Image: string, experimentTitle:
     if (!API_KEY) {
         throw new Error('API Key bulunamadı!');
     }
+    try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${API_KEY}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                model: VISION_MODEL,
+                messages: [
+                    {
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: `Sen Edusonex LAB'ın baş bilim danışmanısın. Bu "${experimentTitle}" deneyine ait bir fotoğraf. 
+                                Lütfen şu adımları izle:
+                                1. Önce çocuğun doğru yaptığı bir detayı içtenlikle öv (Örn: 'Harika bir başlangıç!').
+                                2. Varsa hatayı veya eksikliği yumuşak bir dille "ipucu" olarak ver. 
+                                3. Bu deneyin gerçek hayattaki (bilimsel/teknolojik) yerini anlatan 1 cümlelik merak uyandırıcı bir hikaye ekle.
+                                4. Çocuğun el becerisi ve düzenine göre 0-100 arası bir 'Mühendislik Puanı' tahmin et. 
+                                
+                                Türkçe ve çocuk dostu bir dil kullan (emojili).
+                                Yanıtı SADECE şu JSON formatında ver: 
+                                { "feedback": "...", "hint": "...", "story": "...", "talent_score": 0 }`
+                            },
+                            {
+                                type: 'image_url',
+                                image_url: {
+                                    url: `data:image/jpeg;base64,${base64Image}`,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                temperature: 0.3,
+                response_format: { type: "json_object" }
+            }),
+        });
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_KEY}`,
-        },
-        body: JSON.stringify({
-            model: VISION_MODEL,
-            messages: [
-                {
-                    role: 'user',
-                    content: [
-                        {
-                            type: 'text',
-                            text: `Bu "${experimentTitle}" deneyine ait bir fotoğraf. Lütfen bu deneyi yapan bir öğrenciye şunları söyle: 1. Fotoğrafta ne gördüğünü çok kısa (1 cümle) özetle. 2. Deneyi doğru yapmış mı veya bir hata/eksik görünüyor mu? 3. Bir sonraki adım için bir ipucu ver. Türkçe ve çocuk dostu bir dil kullan (emojili).`
-                        },
-                        {
-                            type: 'image_url',
-                            image_url: {
-                                url: `data:image/jpeg;base64,${base64Image}`
-                            }
-                        }
-                    ]
-                }
-            ],
-            max_tokens: 300,
-        }),
-    });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Groq Vision API Error:', errorData);
+            throw new Error(`API Hatası: ${response.status}`);
+        }
 
-    if (!response.ok) {
-        throw new Error('Görsel analiz edilemedi.');
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+
+        try {
+            return JSON.parse(content);
+        } catch (parseError) {
+            console.error('JSON Parse Error:', content);
+            throw new Error('AI yanıtı anlaşılamadı (Format Hatası).');
+        }
+    } catch (error) {
+        console.error('Groq Vision Error:', error);
+        return {
+            feedback: "Görüntüyü analiz ederken küçük bir bağlantı sorunu yaşadım. Tekrar dener misin dostum? 🚀",
+            hint: "Işığı biraz daha iyi ayarlayıp tekrar çekmeyi deneyebilirsin.",
+            story: "Bilimde bazen veriler eksik gelebilir, bu da bir deneyin parçası!",
+            talent_score: 0
+        };
     }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
 }
