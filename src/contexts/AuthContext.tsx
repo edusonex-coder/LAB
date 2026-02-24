@@ -11,6 +11,7 @@ interface Profile {
     xp: number;
     level: number;
     tenant_id: string | null;
+    is_super_admin: boolean;
 }
 
 interface AuthContextType {
@@ -18,6 +19,8 @@ interface AuthContextType {
     profile: Profile | null;
     session: Session | null;
     loading: boolean;
+    isAdmin: boolean;
+    isSuperAdmin: boolean;
     signIn: (email: string, password: string) => Promise<void>;
     signUp: (email: string, password: string, fullName: string) => Promise<void>;
     signOut: () => Promise<void>;
@@ -82,32 +85,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .single();
 
             if (error) {
-                if (error.code === 'PGRST116') {
-                    // Create basic profile if missing
-                    const { data: { user } } = await supabase.auth.getUser();
-                    if (user) {
-                        const newProfile = {
-                            id: user.id,
-                            full_name: user.user_metadata.full_name || 'Yeni Kullanıcı',
-                            role: 'student',
-                        };
-                        const { data: createdProfile, error: createError } = await supabase
-                            .from('profiles')
-                            .insert(newProfile)
-                            .select()
-                            .single();
-
-                        if (!createError) {
-                            setProfile(createdProfile);
-                            return;
-                        }
-                    }
-                }
-                throw error;
+                // Profile missing is an error now, not an auto-creation trigger
+                console.error('Profile fetch error:', error);
+                setProfile(null);
+                return;
             }
             setProfile(data);
         } catch (error) {
-            console.error('Error fetching profile:', error);
+            console.error('Unexpected error fetching profile:', error);
         } finally {
             setLoading(false);
         }
@@ -119,11 +104,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             password,
         });
         if (error) throw error;
-        navigate('/');
     };
 
     const signUp = async (email: string, password: string, fullName: string) => {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -134,13 +118,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             },
         });
         if (error) throw error;
-        navigate('/');
+
+        // If signup is successful and user is created, we can explicitly create the profile
+        // but normally we rely on a database trigger for this to ensure consistency.
+        if (data.user) {
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert({
+                    id: data.user.id,
+                    full_name: fullName,
+                    role: 'student'
+                });
+            if (profileError) console.error('Manual profile creation error:', profileError);
+        }
     };
 
     const signOut = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
-        navigate('/');
     };
 
     const value = {
@@ -148,6 +143,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         profile,
         session,
         loading,
+        isAdmin: profile?.role === 'admin' || profile?.is_super_admin === true,
+        isSuperAdmin: profile?.is_super_admin === true,
         signIn,
         signUp,
         signOut,

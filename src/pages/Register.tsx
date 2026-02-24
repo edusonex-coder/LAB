@@ -23,6 +23,7 @@ export default function Register() {
         try {
             await signUp(email, password, fullName);
             toast.success('Kayıt başarılı! Bilimin dünyasına hoş geldin.');
+            navigate('/');
         } catch (error: any) {
             toast.error('Kayıt yapılamadı: ' + (error.message || 'Lütfen bilgileri kontrol edin'));
         } finally {

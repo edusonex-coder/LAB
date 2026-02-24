@@ -5,8 +5,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as api from '@/services/api';
-import { useUserStore } from '@/store/useUserStore';
-import { useChatStore } from '@/store/useChatStore';
+import { useUserStore } from '@/store/userStore';
+import { useChatStore } from '@/store/chatStore';
 
 // ── Keys ──────────────────────────────────────────────────────────────
 export const queryKeys = {
@@ -72,7 +72,10 @@ export function useSendMessage() {
   return useMutation({
     mutationFn: (content: string) => api.sendChatMessage(content),
     onSuccess: ({ userMsg, assistantMsg }) => {
-      addMessages(userMsg, assistantMsg);
+      addMessages(
+        { ...userMsg, timestamp: userMsg.timestamp.toISOString() },
+        { ...assistantMsg, timestamp: assistantMsg.timestamp.toISOString() }
+      );
     },
   });
 }

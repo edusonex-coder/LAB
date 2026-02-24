@@ -12,7 +12,7 @@ import {
   type ExperimentSet,
   type Badge,
   type ChatMessage,
-} from '@/data/mockData';
+} from '@/mocks/mockData';
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 

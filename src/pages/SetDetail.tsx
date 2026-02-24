@@ -1,12 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSetStore } from '@/store/setStore';
-import { ArrowLeft, CheckCircle2, Circle, HelpCircle, BookOpen } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Circle, HelpCircle, BookOpen, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import ExperimentScanner from '@/components/ExperimentScanner';
 // Removed useExperimentStore confetti for now, or can re-import if compatible
 
 export default function SetDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { sets, toggleStep } = useSetStore();
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const kit = sets.find((s) => s.id === id);
 
@@ -38,7 +42,22 @@ export default function SetDetail() {
           <h1 className="text-xl font-extrabold font-heading">{kit.emoji} {kit.title}</h1>
           <p className="text-xs text-muted-foreground">{kit.category} · Sınıf {kit.grade}</p>
         </div>
+        <button
+          onClick={() => setIsScannerOpen(true)}
+          className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl hover:bg-emerald-500/20 transition-all border border-emerald-500/20 animate-pulse"
+        >
+          <Sparkles size={22} />
+        </button>
       </div>
+
+      <AnimatePresence>
+        {isScannerOpen && (
+          <ExperimentScanner
+            experimentTitle={kit.title}
+            onClose={() => setIsScannerOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <div className="px-4 py-4 space-y-4">
         {/* Progress */}

@@ -1,10 +1,11 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, FlaskConical, Trophy, MessageCircle, Settings, Package, MapPin, ShoppingBag, LogIn, UserCircle } from 'lucide-react';
+import { Home, FlaskConical, Trophy, MessageCircle, Settings, Package, MapPin, ShoppingBag, LogIn, UserCircle, QrCode } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const studentNavItems = [
   { path: '/', icon: Home, label: 'Ana Sayfa' },
   { path: '/sets', icon: FlaskConical, label: 'Deneyler' },
+  { path: '/pasaport', icon: QrCode, label: 'Pasaport' },
   { path: '/dashboard', icon: Trophy, label: 'Başarılar' },
   { path: '/assistant', icon: MessageCircle, label: 'Asistan' },
   { path: '/settings', icon: Settings, label: 'Ayarlar' },

@@ -17,6 +17,10 @@ import Wholesale from "./pages/Wholesale";
 import DealerFinder from "./pages/DealerFinder";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AdminLayout from "./components/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import KitPassport from "./pages/KitPassport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,12 +45,20 @@ const App = () => (
               <Route path="/set/:id" element={<SetDetail />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/assistant" element={<Assistant />} />
+              <Route path="/pasaport" element={<KitPassport />} />
               <Route path="/settings" element={<SettingsPage />} />
 
               {/* B2B / Ürün Sayfaları */}
               <Route path="/urunler" element={<Products />} />
               <Route path="/toptan-teklif" element={<Wholesale />} />
               <Route path="/bayi-bul" element={<DealerFinder />} />
+
+              {/* Admin Paneli (Ortak) */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                {/* Gelecek admin sayfaları buraya */}
+              </Route>
 
               <Route path="*" element={<NotFound />} />
             </Routes>

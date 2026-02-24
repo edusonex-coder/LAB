@@ -22,6 +22,7 @@ export default function Login() {
         try {
             await signIn(email, password);
             toast.success('Giriş başarılı! Hoş geldin.');
+            navigate('/');
         } catch (error: any) {
             toast.error('Giriş yapılamadı: ' + (error.message || 'Hatalı bilgiler'));
         } finally {

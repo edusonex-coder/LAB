@@ -3,9 +3,11 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 export default function SettingsPage() {
   const { profile, signOut, user } = useAuth();
+  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true); // LAB'da varsayılan dark olabilir
 
   const toggleDark = () => {
@@ -17,6 +19,7 @@ export default function SettingsPage() {
     try {
       await signOut();
       toast.success('Başarıyla çıkış yapıldı.');
+      navigate('/login');
     } catch (error) {
       toast.error('Çıkış yapılırken bir hata oluştu.');
     }
